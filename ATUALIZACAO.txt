@@ -1,0 +1,153 @@
+Os Cânticos dos Sete: Brumaférrea — pacote consolidado atualizado em 23/10/2026
+
+Base do projeto
+- Esta compilação usa como base de trabalho a versão mais recente com a bruxa acompanhante (`rpgzinho_bruxa_acompanha.zip`) e mantém as correções reunidas ao longo desta sessão.
+- Os recursos gráficos, modelos, músicas e cenas foram preservados; os scripts foram alterados apenas nos sistemas envolvidos nas correções.
+
+Correções incluídas
+- Corrigida a inferência de tipo no acompanhamento da bruxa: `behind` e `target` são declarados explicitamente como Vector3, evitando o erro de analisador do Godot.
+- Separação espacial dos contratos de caça: antes de aceitar uma caçada, o sistema consulta os locais já reservados por outros contratos ativos e escolhe outro ponto.
+- O gerador de locais tenta manter pelo menos 125 unidades de distância entre pontos de contratos diferentes; se os spawns normais estiverem agrupados, procura terreno livre em outros setores.
+- A posição de cada contrato continua sendo guardada no estado da missão, para que os alvos daquele contrato sejam recriados no mesmo local ao restaurar os objetivos ativos.
+- O seletor de locais também recebe as posições reservadas ao gerar ofertas, reduzindo a coincidência dos pontos sugeridos.
+- Mantidas as atualizações anteriores do menu de pausa, missão de confiança da bruxa, acompanhamento da companheira e relações de afeição/romance dos NPCs.
+
+Arquivos de código alterados nesta correção
+- scripts/game.gd
+- scripts/procedural_quests.gd
+- scripts/overworld.gd
+- scripts/npc.gd
+- scripts/npc_society.gd
+- scripts/pause_menu.gd
+
+Validação
+- O pacote foi reconstruído a partir do ZIP-base completo e sua integridade estrutural será verificada após a criação.
+- O executável do Godot 4.6 não está disponível neste ambiente; portanto, não foi possível executar o projeto para confirmar a compilação e o comportamento em tempo real.
+
+
+Correção adicional — muros e fachadas das cidades
+- Malhas dos edifícios recebem margem extra de culling para evitar que o renderizador as descarte incorretamente em vistas rasantes.
+- Materiais dos edifícios são duplicados por material-base e configurados como duas faces, preservando textura e demais parâmetros.
+- O fade por dithering foi desativado apenas nos edifícios; os limites de distância de renderização continuam ativos e o sistema de streaming de colisões foi mantido.
+
+
+Acompanhamento da bruxa aliada (23/10/2026):
+- A velocidade da bruxa aliada acompanha a velocidade de caminhada/corrida do jogador, em vez de usar o passo lento dos NPCs comuns.
+- A posição de acompanhamento é atualizada com mais frequência para reduzir o atraso durante deslocamentos rápidos.
+- Enquanto o jogador estiver montado, a bruxa fica invisível, sem colisão e posicionada junto ao jogador, como se compartilhasse a montaria; ao desmontar, volta a aparecer atrás dele.
+
+Correção de persistência da bruxa e dos cavalos (23/10/2026):
+- A posição e a orientação da bruxa são guardadas diretamente no save da campanha, além do registro persistente da sociedade.
+- Ao reconstruir o overworld, a posição persistida da bruxa não é mais substituída pelo ponto original da Casa da Bruxa ou da margem do lago.
+- O save registra posição, orientação, identidade estável e estado montado/desmontado de todos os cavalos.
+- Ao continuar a campanha, os cavalos são associados novamente pelo identificador da cidade/estábulo e restaurados onde foram deixados; se o jogador salvou montado, a montaria volta anexada ao jogador e a câmera/estado de montaria também é restaurado.
+- O estado dos cavalos fica em espera durante a reconstrução temporária do mundo ao restaurar uma campanha salva dentro da cripta, para ser reaplicado quando o overworld voltar.
+- Validação estrutural do ZIP: realizada após empacotamento. O executável do Godot 4.6 não está disponível neste ambiente, então a compilação e o teste dentro do jogo ainda precisam ser confirmados.
+
+Sistema de percepção e tática da bruxa (24/10/2026):
+- A bruxa aliada agora examina inimigos próximos em ciclos de decisão, considera distância, altura e linha de visão antes de escolher alvos.
+- Durante combate, ela deixa de seguir a posição do jogador cegamente: mantém distância de conjuração, recua quando um inimigo chega perto e busca um ângulo lateral; se ficar distante do jogador, tenta voltar para uma posição de apoio.
+- O menu de diálogo da bruxa aliada permite selecionar posturas: adaptável, ofensiva, defensiva, manter posição ou acompanhar à distância segura.
+- As posturas alteram o alcance de percepção/ataque, a cadência de magia, as prioridades de alvo, o espaçamento tático e o limiar de cura. A postura escolhida fica salva com a campanha.
+- Todos os NPCs têm agora um tópico de conversa contextual que reage a ameaças visíveis próximas, ferimentos do jogador, montaria, horário, clima, interior/estalagem e eventos que o próprio NPC conhece. O texto é composto no momento da conversa, sem dar ao personagem conhecimento de eventos distantes que não testemunhou ou ouviu.
+- O tópico contextual também muda seu rótulo conforme a situação atual; a bruxa tem opções adicionais após a aliança para conversar sobre a situação e seu estado.
+- A base existente de memória individual, testemunhas, rumores, relações, profissões e rotinas foi preservada e reutilizada.
+- O código de percepção física da bruxa foi movido para o ciclo de física para executar as consultas de linha de visão com segurança.
+- Validação estática: conferidos os delimitadores dos scripts e a preservação dos métodos existentes; o Godot 4.6 não está disponível aqui, portanto falta compilação e teste dentro do jogo.
+
+
+Conversas de companheirismo e notificações menos invasivas (24/10/2026):
+- Depois da aliança, o menu da bruxa não oferece mais perguntas sobre a lenda, o esconderijo ou a antiga tarefa; passa a oferecer conversa de companheiros, observações do entorno, estado da companheira, conselhos e estratégia de combate.
+- A conversa cotidiana da bruxa varia conforme familiaridade, afeição, ferimentos do jogador, montaria, ameaças próximas, clima e horário.
+- O flerte agora abre uma conversa própria com escolha de abordagem (elogio sincero ou brincadeira) e resposta do NPC dentro da caixa de diálogo. A relação continua sendo atualizada pelo sistema persistente de afeição/romance; o resultado do flerte não é mais mostrado como toast.
+- A resposta da bruxa aliada ao flerte tem falas próprias de companheira, em vez de tratá-la como uma estranha que mal conhece o jogador.
+- Notificações gerais foram movidas do topo central para uma área discreta na parte inferior esquerda, acima do painel de status; tamanho de fonte, contraste e tempo visível foram reduzidos para diminuir a interrupção.
+- Validação estática dos três scripts e integridade estrutural do ZIP foram conferidas após o empacotamento. Não há executável do Godot 4.6 disponível neste ambiente para teste em tempo real.
+
+
+Nomes pessoais e profissões separados (24/10/2026):
+- O nome de exibição de cada NPC contém apenas o nome pessoal; profissões e títulos são armazenados num campo próprio.
+- Acima dos NPCs, aparece somente o nome. No cabeçalho da conversa, aparece o nome seguido de uma única profissão, por exemplo “Jesuína Ferro — Bruxa”.
+- A correção vale para todas as profissões e mantém um fallback para perfis antigos que não tenham o campo separado.
+- Os nomes continuam sendo derivados do registro persistente; não é necessário começar uma nova campanha.
+
+Correção do menu de pausa recorrente (24/10/2026):
+- O menu de pausa foi movido do CanvasLayer do HUD para uma CanvasLayer independente, em camada visual superior, evitando que a visibilidade de outros painéis interfira nele.
+- Ao entrar em pausa, a instância é verificada e reaberta caso tenha sido ocultada; o menu e sua camada processam mesmo quando a simulação está interrompida.
+- O menu é garantido na construção do HUD e antes de cada abertura, com reparentamento para a camada correta se uma instância antiga ainda estiver no HUD.
+- O evento de Esc é marcado como tratado depois da alternância, evitando que outro receptor processe a mesma tecla.
+- Validação do ZIP concluída; o executável do Godot 4.6 não está disponível neste ambiente, então ainda é necessário testar múltiplos ciclos de pausa dentro do jogo.
+
+CORREÇÃO ADICIONAL — MENU DE PAUSA NÃO VISÍVEL
+- Corrigida a ordem de desenho interna do menu: a camada de escurecimento fica atrás e o painel de pausa em Z explícito à frente.
+- Removido o Z máximo do controle raiz do menu para evitar saturação da ordem Z herdada pelos controles filhos.
+- Ao abrir a pausa, a visibilidade/ordem dos elementos principais é reafirmada e revalidada após o layout.
+
+
+Revisão de naturalidade de diálogos, missões e interface (24/10/2026):
+- As conversas de NPCs usam variações estáveis de voz, personalidade, profissão, interesse pessoal e objetivo de vida. Os temas e as respostas mudam entre habitantes que exercem o mesmo ofício.
+- A geração de conversas entre moradores evita repetir linhas recentes sempre que há outra opção para o mesmo assunto; conversas comuns podem terminar sem a terceira fala de encerramento, evitando que todo diálogo pareça uma explicação com conclusão.
+- As saudações do jogador passaram a contar apenas a fala realmente exibida. Saudações repetidas têm alternativas compatíveis com o estilo de fala do personagem, sem apagar o histórico de acontecimentos importantes.
+- Ajustado o cumprimento formal conforme o horário do dia, evitando saudações de tarde pela manhã. Algumas falas e encerramentos foram encurtados para parecerem conversa comum, sem moral ou resumo automático ao final de cada troca.
+- As falas de flerte agora são exibidas em duas etapas com quem fala identificado corretamente: primeiro “Você”, depois o NPC. O diálogo não apresenta a fala do jogador como se fosse pronunciada pelo personagem abordado.
+- O diário de pedidos, descrições das missões e mensagens do jogo usam termos mais naturais e razões ligadas ao trabalho de quem fez o pedido, em vez de descrições genéricas idênticas.
+- Preservados nomes persistentes, objetivos individuais, relações, memórias de eventos, rumores, rotina, acompanhamento tático da bruxa, persistência de bruxa/cavalos e correções do menu de pausa.
+- A revisão desta etapa foca em escrita, variedade de conversa, contexto e apresentação textual. Modelos, texturas, sprites e animações não foram redesenhados nesta etapa.
+- Verificação estática dos delimitadores e funções duplicadas será feita após o empacotamento. O executável do Godot 4.6 não está disponível neste ambiente, então a compilação e a execução dentro do jogo continuam pendentes.
+
+Revisão de naturalidade geral do jogo (24/10/2026):
+- A conversa de flerte agora separa visualmente quem fala: a fala escolhida aparece como “Você”, e a resposta é mostrada em seguida com o nome do NPC. A caixa de diálogo aceita um interlocutor por etapa sem mudar as conversas antigas.
+- O histórico de diálogo passou a registrar apenas falas que foram realmente exibidas. Opções ainda não escolhidas deixam de entrar na memória do personagem, e voltar ao início da conversa não conta a mesma frase repetida como uma nova fala.
+- Saudações repetidas recebem alternativas compatíveis com a voz do NPC. Conversas entre moradores evitam falas recentes quando há outra variante para o mesmo assunto e nem toda conversa cotidiana termina com uma terceira frase de resumo.
+- Corrigidos cumprimentos que diziam “Boa tarde” pela manhã; a hora do dia passa a ser considerada na saudação formal.
+- O assunto “Como vão as coisas na cidade?” recebeu respostas alternativas por profissão e personalidade, com preocupações concretas de guardas, ferreiros, curandeiras, mercadores, mensageiros e moradores.
+- Reduzidas algumas frases excessivamente explicativas ou moralizantes em conversas de estalagem e em relatos de trabalho concluído. Os pedidos continuam variando por tipo de criatura, profissão de quem pede, cidade e motivo prático.
+- A mensagem após salvar usa o mesmo texto curto na notificação e no painel, sem anunciar “sucesso” duas vezes.
+- A revisão privilegia variação escrita à mão e contexto verificável do mundo; não troca as falas por geração de texto irrestrita e não redesenha os recursos visuais nesta etapa.
+- Verificação estática concluída: 28 arquivos GDScript examinados, sem delimitadores desequilibrados ou funções duplicadas; os 10 objetivos pessoais gerados têm uma resposta correspondente. O Godot 4.6 não está disponível neste ambiente, portanto a compilação e o teste em execução continuam pendentes.
+
+Revisão do sistema de alerta, cerco e queda de cidades (24/10/2026):
+- O alerta urbano foi reequilibrado para depender principalmente da quantidade de covis de monstros, criptas e inimigos na faixa que ameaça a cidade, mantendo um crescimento ambiental pequeno com a passagem do tempo.
+- Pressão de grupos próximos é limitada por passo de simulação para não saltar de 0 a 100 instantaneamente quando muitos atores entram no streaming.
+- Ao atingir 100, a cidade entra em estado persistente de cerco; a onda de invasores pode ser repelida pelo jogador, ou o cerco pode terminar em captura conforme covis, criptas, ataques anteriores e invasores restantes.
+- Uma cidade capturada esconde seus moradores, passa a apresentar orcs, goblins e esqueletos como atores hostis combatíveis e mantém esses invasores até que sejam derrotados. Limpar a cidade deixa o estado de ruínas, sem reconstrução automática.
+- Quando a cidade cai, os materiais das construções físicas são escurecidos e uma parte determinística das construções comuns é removida visualmente para indicar destruição. Os marcos principais permanecem reconhecíveis e as malhas ocultadas deixam de gerar colisões invisíveis.
+- O estado de cerco, captura, ruínas, contagem de invasores e alerta é integrado ao save da campanha. Dormir agora avança a simulação de ameaça durante as horas passadas, incluindo cercos que terminem enquanto o jogador descansa.
+- O mapa mostra o alerta da cidade também na faixa de pressão externa, facilitando acompanhar o perigo antes de entrar nos muros.
+- Corrigidas declarações de variáveis repetidas nos ramos de cerco/ocupação para reduzir risco de erro de compilação.
+- Verificação feita por inspeção estrutural dos scripts e da persistência. O executável do Godot 4.6 não está disponível neste ambiente; a compilação e o teste em execução ainda precisam ser feitos.
+
+Correção de população em cidades ocupadas ou reduzidas a ruínas (24/10/2026):
+- Cidades cujo estado salvo é "occupied" ou "ruins", ou cuja flag city_destroyed está ativa, não geram novos moradores civis, estalajadeiros, guardas ou outros residentes ao carregar a campanha.
+- A regra consulta o estado regional salvo antes de criar cada perfil, evitando que a população seja recriada e registrada novamente após a queda da cidade.
+- A bruxa única continua independente da população urbana, e mercadores/mensageiros com viagem ativa preservam a condição de viajantes.
+- Corrigida uma chamada inválida de Object.get() em _set_city_residents_hidden(): GDScript aceita somente o nome da propriedade nesse método, não um valor padrão como segundo argumento.
+- Corrigida a mesma assinatura inválida no levantamento de rumores de estalagem.
+- Verificação estática e integridade do ZIP conferidas. O executável do Godot 4.6 não está disponível neste ambiente; compilação e teste dentro do jogo continuam pendentes.
+
+
+Atualização da apresentação das magias e música de exploração (24/10/2026):
+- As descrições de magia se concentram em efeito e números úteis, sem explicar para onde o feitiço vai ou que o jogador não precisa selecionar um alvo.
+- A descrição geral das magias foi reescrita para soar menos técnica, mantendo a diferença entre conjuração ofensiva contínua e cura por toque.
+- Integradas as faixas `assets/music/sound/overworld/travelin1.mp3` e `travelinnight.mp3` ao gestor musical: a primeira é escolhida durante o dia (06:00–17:59), a segunda à noite (18:00–05:59).
+- A música de exploração é um evento ocasional fora das cidades, com espera inicial aleatória de 55–115 segundos e intervalos seguintes de 180–360 segundos de exploração ativa. As faixas não entram em loop.
+- Não são iniciadas novas faixas de exploração em assentamentos, em criptas, no menu, na criação de personagem ou após a morte. A música de cidade e a música de exploração não se sobrepõem; os jingles temporais silenciam brevemente a faixa ambiente e restauram seu volume ao terminar.
+- Os temporizadores de exploração são reiniciados ao iniciar uma nova campanha. Os dois MP3 permanecem nos caminhos fornecidos e carregam pelo próprio gestor de música.
+- A validação do pacote inclui integridade do ZIP e inspeção estática do código; o executável do Godot 4.6 não está disponível neste ambiente para compilação ou teste em tempo real.
+
+
+Combate de NPCs e pressão regional das invasões (24/10/2026):
+- Guardas, alguns profissionais adultos e habitantes corajosos podem detectar monstros próximos e combatê-los; civis sem perfil de combate tentam fugir em vez de continuar a rotina enquanto há perigo ao alcance. Conversas ambientais são interrompidas quando uma ameaça se aproxima.
+- Monstros do mundo aberto selecionam alvos entre o jogador e NPCs visíveis; guardas atraem mais atenção, e os invasores de uma cidade ignoram a antiga zona segura durante o cerco e a ocupação. NPCs caídos ficam temporariamente incapacitados e podem se recuperar.
+- Mortes causadas por NPCs contam para a redução da ameaça regional e para o progresso do cerco/ocupação, sem conceder ao jogador recompensas, progresso de missão ou notificações por abates que não realizou.
+- Cada cidade mantém seu próprio nível de alerta, influenciado pela presença regional de covis, criptas, monstros ativos e período noturno. A cidade onde o jogador está recebe pressão adicional e cresce mais rápido que as demais cidades em estado seguro, para concentrar eventos jogáveis sem tornar todos os lugares igualmente perigosos.
+- O alerta e os cercos continuam avançando com o tempo de jogo e durante o descanso, e os estados regionais permanecem integrados ao salvamento.
+- Verificação estrutural e integridade do ZIP conferidas; o Godot 4.6 não está disponível neste ambiente para compilação ou teste em execução.
+- Removido do mapa o marcador temporário de teste da bruxa; a personagem e seus locais de aparição permanecem inalterados.
+
+Correção da interface visível atrás do menu principal (27/10/2026):
+- A interface exclusiva da aventura foi agrupada sob o nó GameplayHUD, separado do painel do menu principal.
+- Ao voltar ao menu principal, o HUD, barra de itens, notificações, bússola, mapa, diário de missões, diálogos, lojas e telas de inventário/armazenamento ficam ocultos juntos; o menu principal permanece visível.
+- Ao iniciar ou continuar uma campanha, o HUD de jogo é reativado. O painel de morte/vitória também oculta a interface de aventura sob a tela de resultado.
+- A separação é feita pela hierarquia de UI, e não apenas por uma lista temporária de elementos, para impedir que atualizações do HUD o tornem visível atrás do menu.
+- Verificada a estrutura do código e a integridade do ZIP. O Godot 4.6 não está disponível neste ambiente para compilar e conferir visualmente a transição.

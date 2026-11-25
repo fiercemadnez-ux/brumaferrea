@@ -1,0 +1,27 @@
+ATUALIZADOR DE BRUMAFÉRREA — CONFIGURAÇÃO DO ITCH.IO
+
+Já configurado no projeto:
+- Página: https://ravenhold.itch.io/brumaferrea
+- Target Itch: ravenhold/brumaferrea
+- Canal esperado: windows
+- Versão atual do projeto-fonte: 0.1.0
+
+O que foi integrado:
+1. O jogo consulta a API pública do itch.io para descobrir a última user-version do canal windows.
+2. Se a versão publicada for mais nova e houver manifesto/pacote configurados, oferece atualização automática na mesma pasta.
+3. Se detectar versão nova mas o pacote automático ainda não estiver configurado, oferece abrir a página do itch.io para download manual.
+4. O pacote é verificado por SHA-256 e o processo de aplicação preserva os saves em user://.
+
+O QUE AINDA É NECESSÁRIO ANTES DE USAR:
+1. Instalar o Butler e fazer `butler login`.
+2. Exportar a build Windows do Godot.
+3. Publicar a build no canal Windows com:
+   .\tools\updater\publish_to_itch.ps1 -BuildDirectory "C:\Builds\Brumaferrea\0.1.0" -Version "0.1.0"
+4. Criar um repositório público para o manifesto e os pacotes update.zip; configurar config/update_manifest_url em project.godot antes de exportar a build que vai distribuir.
+5. Seguir tools/updater/README.md para gerar e publicar cada patch.
+
+Importante:
+- O arquivo já publicado no itch.io não ganha o código atualizador por si só. É necessário publicar uma primeira build exportada nova que contenha estas alterações.
+- A API do itch informa a versão, não entrega por si só o pacote ZIP para este atualizador personalizado.
+- Se a build é um único EXE de 172 MB com os recursos embutidos, uma mudança nesse EXE exige baixar o arquivo inteiro. Para patches realmente diferenciais, o app do itch.io/Butler é melhor.
+- Nenhum upload foi feito para sua conta itch.io a partir deste ambiente, e nenhum serviço externo foi criado em seu nome.

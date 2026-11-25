@@ -1,0 +1,21 @@
+As Criptas de Vel'Morah — clima e ciclo celeste
+
+Ciclo de dia e noite:
+- Dia completo: 20 minutos reais por padrão.
+- O sol nasce às 06:00 no leste (+X), cruza o céu pelo sul e se põe às 18:00 no oeste (-X).
+- A lua percorre o arco oposto e suas fases continuam avançando entre os dias.
+- As estrelas aumentam de intensidade ao anoitecer.
+
+Clima simplificado:
+- Alterna automaticamente entre céu limpo, nublado, chuva e tempestade.
+- A chuva usa partículas leves; as superfícies do mundo escurecem e ficam mais lisas ao molhar.
+- Tempestades podem gerar relâmpagos e trovões sintéticos, sem depender de arquivos de áudio externos.
+
+Atalhos de teste durante a exploração (fase de jogo, não menu):
+- F5: voltar ao clima automático.
+- F6: céu limpo.
+- F7: nublado.
+- F8: chuva.
+- F9: tempestade.
+
+Os atalhos F6–F9 desativam temporariamente a troca automática, facilitando conferir cada efeito. O projeto foi validado estruturalmente; ainda precisa ser aberto e executado no Godot 4.6 para confirmar o resultado visual e eventuais avisos do motor.

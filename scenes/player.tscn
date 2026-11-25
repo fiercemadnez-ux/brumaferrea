@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dnhpr7h16wjne"]
+
+[ext_resource type="Script" uid="uid://cssus1jd87g1n" path="res://scripts/player.gd" id="1_3vyb7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
+radius = 0.35
+height = 1.8
+
+[node name="Player" type="CharacterBody3D" unique_id=2013723662]
+script = ExtResource("1_3vyb7")
+
+[node name="Collision" type="CollisionShape3D" parent="." unique_id=715422998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_3vyb7")
+
+[node name="Camera" type="Camera3D" parent="." unique_id=771353955]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+current = true
+far = 36.32
+
+[node name="Torch" type="SpotLight3D" parent="Camera" unique_id=1349687093]
+light_color = Color(1, 0.75, 0.5, 1)
+light_energy = 2.5
+spot_range = 12.0
+spot_angle = 40.0
+
+[node name="Sway" type="Node3D" parent="Camera" unique_id=1353134891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.25, -0.45)
+
+[node name="Swing" type="Node3D" parent="Camera/Sway" unique_id=889438825]
