@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cqfkmvprs2nyd"
+path="res://.godot/imported/The Morning.mp3-7f919a6788bf6bddf7be6b9322dba91d.mp3str"
+
+[deps]
+
+source_file="res://assets/sound/music/The Morning.mp3"
+dest_files=["res://.godot/imported/The Morning.mp3-7f919a6788bf6bddf7be6b9322dba91d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
